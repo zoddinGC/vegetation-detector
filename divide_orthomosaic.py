@@ -10,19 +10,34 @@ python divide_orthomosaic.py --input </path/to/orthomosaic.tif>
 --output </path/to/output/dir/>
 """
 
-import cv2
 import argparse
 
 from os import listdir
 from PIL import Image
 
 
-def save_chunck(image_chunk:Image, output_path: str):
-    number = len(listdir(output_path))
-    image_chunk.save(f'{output_path}/chunck_{number}.png', 'PNG')
+def save_chunck(image_chunk:Image, output_dir: str):
+    """
+        This function receives a PIL Image object and save it in a directory
+
+        :param image_chunck: PIL Image object
+        :param output_dir: String Directory to save images
+    """
+    
+    number = len(listdir(output_dir))
+    image_chunk.save(f'{output_dir}/chunck_{number}.png', 'PNG')
 
 
-def crop_large_images(input_path: str, output_path: str, chunk_size: tuple = (1000, 1000)) -> cv2.imread:
+def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple = (1000, 1000)):
+    """
+        This function receives a path to a large image in .tif format, crop it, and transform
+        it into small images .png
+
+        :param input_path: String Path to original image .tif
+        :param output_dir: String Directory to save all small images .png
+        :param chunck_size: Tuple(int, int) The size of the new small images
+    """
+
     with Image.open(input_path) as img:
         # Max image dimensions
         width, height = img.size
@@ -42,7 +57,7 @@ def crop_large_images(input_path: str, output_path: str, chunk_size: tuple = (10
                 print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
 
                 # Process the image chunk
-                save_chunck(image_chunk, output_path)
+                save_chunck(image_chunk, output_dir)
 
 
 if __name__ == "__main__":
