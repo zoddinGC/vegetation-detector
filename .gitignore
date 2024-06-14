@@ -1,6 +1,7 @@
 # Ignore PDF files and its images
 **.png
 **.tif
+**img*.txt
 
 # Every predicted file
 data/predict/*
