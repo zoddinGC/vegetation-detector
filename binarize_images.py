@@ -11,35 +11,17 @@ python binarize_images.py --input </path/to/images/dir> --output
 </path/to/segmented/dir/>
 """
 
+# Python libraries
 import argparse
 import numpy as np
 import cv2
 
-from os import listdir, makedirs
 from sklearn.cluster import DBSCAN
-from re import findall
+from os import listdir
 
-
-def extract_numbers(input_string) -> str:
-    # Find all sequences of digits in the string
-    numbers = findall(r'\d+', input_string)
-    return numbers[0]
-
-def check_folder_existence(folder_path:str):
-    """
-    Check if there's a folder in the given folder path. If not, try to create.
-
-    :param folder_path: Relative path to check the folder
-    """
-    try:
-        try:
-            # Check if folder exists
-            listdir(folder_path)
-        except:
-            # Create of not
-            makedirs(folder_path)
-    except ValueError as e:
-        print(f'Not possible to create folder in {folder_path}. Error: {e}')
+# Local imports
+from modules.managers.folder_manager import check_folder_existence
+from modules.managers.string_manager import extract_numbers
 
 
 def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool = False) -> list:
@@ -80,6 +62,7 @@ def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool 
 
     # Save the output image inverted (white = Plant)
     cv2.imwrite(output_dir.strip('/') + f'/img_{key}.png', cv2.bitwise_not(output_image))
+    print(f'Image img_{key}.png processed')
 
     if debug:
         # Change detect plants to black pixels

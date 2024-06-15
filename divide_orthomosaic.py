@@ -10,10 +10,14 @@ python divide_orthomosaic.py --input </path/to/orthomosaic.tif>
 --output </path/to/output/dir/>
 """
 
+# Python libraries
 import argparse
 
 from os import listdir
 from PIL import Image
+
+# Local imports
+from modules.managers.folder_manager import check_folder_existence
 
 
 def save_chunck(image_chunk:Image, output_dir: str):
@@ -28,7 +32,7 @@ def save_chunck(image_chunk:Image, output_dir: str):
     image_chunk.save(f'{output_dir}/chunck_{number}.png', 'PNG')
 
 
-def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple = (1000, 1000)):
+def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(250, 250)):
     """
         This function receives a path to a large image in .tif format, crop it, and transform
         it into small images .png
@@ -37,6 +41,8 @@ def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple = (100
         :param output_dir: String Directory to save all small images .png
         :param chunck_size: Tuple(int, int) The size of the new small images
     """
+
+    check_folder_existence(output_dir)
 
     with Image.open(input_path) as img:
         # Max image dimensions
