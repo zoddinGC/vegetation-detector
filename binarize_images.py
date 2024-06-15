@@ -20,7 +20,7 @@ from sklearn.cluster import DBSCAN
 from re import findall
 
 
-def extract_numbers(input_string):
+def extract_numbers(input_string) -> str:
     # Find all sequences of digits in the string
     numbers = findall(r'\d+', input_string)
     return numbers[0]
@@ -42,12 +42,22 @@ def check_folder_existence(folder_path:str):
         print(f'Not possible to create folder in {folder_path}. Error: {e}')
 
 
-def detect_green_pixels(image_path: str, output_path: str, key: int, debug: bool = False) -> list:
+def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool = False) -> list:
+    """
+        This function will receive an image path, load the image and search for green pixels on it. After detecting those pixels,
+        the function will save a new image with just white and black pixels in the output directory.
+
+        :param image_path: Path to the image
+        :param output_dir: Path to directory to save the image
+        :param key: Image number to save
+        :param debug: Boolean indicating if the image show be displayed on user's screen or not
+    """
+
     # Read the image
     image = cv2.imread(image_path)
     
     # Check if there's any 'label' folder in the output destination
-    check_folder_existence(output_path)
+    check_folder_existence(output_dir)
 
     # Convert the image from BGR to HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -59,17 +69,17 @@ def detect_green_pixels(image_path: str, output_path: str, key: int, debug: bool
     # Create a mask for green color
     mask = cv2.inRange(hsv, lower_green, upper_green)
 
-    # Create the output image
-    output_image = np.full_like(image, 255)  # Initialize with white
+    # Create the final image
+    output_image = np.full_like(image, 255)
 
     # Set pixels in the green range to black
-    output_image[mask == 255] = [0, 0, 0]  # Set to black where the mask is true
+    output_image[mask == 255] = [0, 0, 0]
 
     # Get the plants clusters
     clusters = cluster_plants(mask, image)
 
     # Save the output image inverted (white = Plant)
-    cv2.imwrite(output_path.strip('/') + f'/img_{key}.png', cv2.bitwise_not(output_image))
+    cv2.imwrite(output_dir.strip('/') + f'/img_{key}.png', cv2.bitwise_not(output_image))
 
     if debug:
         # Change detect plants to black pixels
@@ -80,10 +90,18 @@ def detect_green_pixels(image_path: str, output_path: str, key: int, debug: bool
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    write_clusters_yolo_notation(clusters, img_name=f'img_{key}', output_path=output_path)
+    write_clusters_yolo_notation(clusters, img_name=f'img_{key}', output_dir=output_dir)
 
 
-def cluster_plants(mask, image):
+def cluster_plants(mask: cv2.imread, image: cv2.imread) -> list:
+    """
+        This function receives a HSV mask and the original image. Based on mask, it will create cluster of identified patterns,
+        and merge them into one single cluster. This is useful to group similar elements such as plants.
+
+        :param mask: cv2 object in HSV colors
+        :param image: cv2 object original image to color
+    """
+
     # Create an empty list to store all clusters
     clusters = []
 
@@ -124,9 +142,17 @@ def cluster_plants(mask, image):
 
     return clusters
 
-def write_clusters_yolo_notation(clusters: list, img_name: str, output_path: str):
+
+def write_clusters_yolo_notation(clusters: list, img_name: str, output_dir: str):
+    """
+        This function receives a list of clusters and write a .txt in YOLOv8 notation.
+
+        :param cluster: list with coordinates <class_id> <x_center> <y_center> <width> <height>
+        :param img_name: str with the same na 741236me of the original image name
+        :output_dir: str Directory to save the .txt file
+    """
     # Create the labels path to save the clusters
-    labels_path = output_path[:output_path.rfind('/')] + '/labels'
+    labels_path = output_dir[:output_dir.rfind('/')] + '/labels'
 
     # Check if there's any 'label' folder in the output destination
     check_folder_existence(labels_path)
@@ -150,4 +176,4 @@ if __name__ == '__main__':
 
     for image_path in listdir(args.input):
         image_path = args.input + '/' + image_path
-        detect_green_pixels(image_path, output_path=args.output, key=extract_numbers(image_path), debug=args.debug)
+        detect_green_pixels(image_path, output_dir=args.output, key=extract_numbers(image_path), debug=args.debug)
