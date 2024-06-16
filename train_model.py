@@ -28,13 +28,13 @@ from modules.managers.image_manager import check_image_shape, show_image, conver
 from modules.managers.folder_manager import check_folder_existence
 
 
-def __pre_process_images(images: list[cv2.imread], avg_shape: list) -> np.array:
+def __pre_process_mask(masks: list[cv2.imread]):
+    return np.array([convert_to_grayscale(x) for x in masks])
+
+def get_image_shape(images: list[cv2.imread], avg_shape: list) -> np.array:
     images = [check_image_shape(x, avg_shape) for x in images]
 
     return np.array(images)
-
-def __pre_process_mask(masks: list[cv2.imread]):
-    return np.array([convert_to_grayscale(x) for x in masks])
 
 def load_images_from_directory(directory_path: str, is_mask: bool = False) -> tuple[cv2.imread]:
     # Create a list of all images presents on the directory
@@ -64,8 +64,8 @@ def train_model(original_images_dir: str, mask_images_dir: str, model_path: str,
 
     print('Processing images...', end=' ')
     # Check with all images have the same shape
-    original_images = __pre_process_images(original_images, avg_shape)
-    mask_images = __pre_process_images(mask_images, avg_shape)
+    original_images = get_image_shape(original_images, avg_shape)
+    mask_images = get_image_shape(mask_images, avg_shape)
 
     # Convert mask to tensor format
     mask_images = __pre_process_mask(mask_images)
