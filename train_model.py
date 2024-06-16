@@ -29,25 +29,43 @@ from modules.managers.folder_manager import check_folder_existence
 
 
 def __pre_process_mask(masks: list[cv2.imread]):
+    """
+        Function to convert all cv2 images within a list to a gray scale
+    """
     return np.array([convert_to_grayscale(x) for x in masks])
 
-def get_image_shape(images: list[cv2.imread], avg_shape: list) -> np.array:
+def check_all_images_shape(images: list[cv2.imread], avg_shape: list) -> np.array:
+    """
+        Function to check if all images inside of an array have the default shape of the model
+    """
     images = [check_image_shape(x, avg_shape) for x in images]
 
     return np.array(images)
 
-def load_images_from_directory(directory_path: str, is_mask: bool = False) -> tuple[cv2.imread]:
+def load_images_from_directory(directory_path: str) -> tuple[cv2.imread]:
+    """
+        This function will load all images inside a directory.
+
+        :param directory_path: A string to the directory containing all images
+        :return: A tuple with all images in cv2.imread objects
+    """
     # Create a list of all images presents on the directory
     images_list = listdir(directory_path)
     images_list.sort(key=extract_numbers)
 
     # Load all images within the directory
-    if is_mask:
-        return [cv2.imread(directory_path.strip('/') + '/' + x) for x in images_list]
-
     return [cv2.imread(directory_path.strip('/') + '/' + x) for x in images_list]
 
 def train_model(original_images_dir: str, mask_images_dir: str, model_path: str, debug: bool = False):
+    """
+        This function will load the images and masks to train a neural network model. The neural network architecture
+        is customized using keras and tensorflow.
+
+        :param original_images_dir: The directory containing all original and cropped images
+        :param mask_images_dir: The directory of all masked images
+        :param model_path: The path to save the best model
+        :param debug: If True, will display the image on the user's screen
+    """
     # Check the model path
     model_path = model_path if model_path.count('.h5') > 0 else model_path + '_.h5'
     check_folder_existence(model_path[:model_path.rfind('/')])
@@ -56,7 +74,7 @@ def train_model(original_images_dir: str, mask_images_dir: str, model_path: str,
     # Load all images from the given directories
     print('Loading images...', end=' ')
     original_images = load_images_from_directory(original_images_dir)
-    mask_images = load_images_from_directory(mask_images_dir, is_mask=True)
+    mask_images = load_images_from_directory(mask_images_dir)
     
     # Calculate the most common shape of the images
     avg_shape = mode(np.array([x.shape for x in original_images]))[0]
@@ -64,8 +82,8 @@ def train_model(original_images_dir: str, mask_images_dir: str, model_path: str,
 
     print('Processing images...', end=' ')
     # Check with all images have the same shape
-    original_images = get_image_shape(original_images, avg_shape)
-    mask_images = get_image_shape(mask_images, avg_shape)
+    original_images = check_all_images_shape(original_images, avg_shape)
+    mask_images = check_all_images_shape(mask_images, avg_shape)
 
     # Convert mask to tensor format
     mask_images = __pre_process_mask(mask_images)

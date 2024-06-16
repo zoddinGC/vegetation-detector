@@ -31,9 +31,17 @@ def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generat
                 # Check if the chunk size matches the expected size (debug)
                 print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
 
-                yield image_chunk, box
+                yield image_chunk, box, (width, height)
 
 def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
+    """
+        Check if the image is smaller or bigger than the average shape. If smaller, will
+        add black background. If bigger, will crop from the beginning and exclude the rest.
+
+        :param image: A numpy array representing the image
+        :param avg_shape: The average shape with 3 dimensions
+        :return: The cropped/expanded image in a numpy array
+    """
     height, width, _ = image.shape
     avg_height, avg_width, _ = avg_shape
 
@@ -70,6 +78,9 @@ def convert_to_grayscale(image):
     return np.expand_dims(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), axis=-1)
 
 def pil_to_cv2_image(pil_image):
+    """
+        Function to convert PIL Image objects into cv2 objects
+    """
     # Convert the PIL image to a NumPy array
     cv2_image = np.array(pil_image)
 
