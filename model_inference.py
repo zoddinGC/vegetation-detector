@@ -19,11 +19,14 @@ from keras.models import Model, load_model
 from os import listdir
 
 # Local imports
-from modules.managers.image_manager import show_image, check_image_shape, pil_to_cv2_image, crop_large_images, remove_black_padding
+from modules.managers.image_manager import show_image, check_image_shape, pil_to_cv2_image, crop_large_images
 from modules.managers.folder_manager import check_folder_existence, clean_folder
 
 
 def load_model_from_path(model_path: str) -> Model:
+    """
+        Load a trained Keras Model from a given path
+    """
     # Check misspeling characters from model path
     model_path = model_path.strip('/')
     model_path = model_path if model_path.count('.h5') > 0 else model_path + '.h5'
@@ -31,6 +34,15 @@ def load_model_from_path(model_path: str) -> Model:
     return load_model(model_path)
 
 def predict_images(larger_image_path: str, model_path: str, save_images_path: str, debug: bool = False):
+    """
+        This function will load a large image, and load a trained model. If the image is bigger or smaller than
+        the trained neural network, it will adjust (crop/expand) and predict.
+
+        :param larger_image_path: Path to the original image
+        :param model_path: Path to the trained keras model
+        :param save_images_path: Path to save the new predicted image
+        :param debug: If True, will display the image and the predicted image on the user's monitor
+    """
     # Check if the given folder to save images exists
     check_folder_existence(save_images_path)
     clean_folder(save_images_path)
