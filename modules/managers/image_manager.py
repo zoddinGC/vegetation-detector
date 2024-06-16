@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 
-def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image]":
+def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image, list]":
     """
         This function receives a path to a large image in .tif format, crop it, and transform
         it into small images .png
@@ -31,7 +31,7 @@ def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generat
                 # Check if the chunk size matches the expected size (debug)
                 print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
 
-                yield image_chunk, box, (width, height)
+                yield image_chunk, (height // chunk_size[1]+1, width // chunk_size[0]+1, height, width)
 
 def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
     """
@@ -91,7 +91,33 @@ def pil_to_cv2_image(pil_image):
         cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_GRAY2RGB)
     return cv2_image
 
+def merge_cropped_images(images: list[cv2.imread], parts: tuple[int, int]):
+    """
+        This function will merge all images and create a larger image. Then, it will save in the given save path
+    """
+    x, y, channels = images[0].shape
+    width, height = (x+2) * parts[1], y * parts[0]
+
+    # Create a black image with the final shape
+    black_image = np.zeros((height, width, 1), dtype=np.uint8)
+
+    # Create an image index
+    idx = 0
+
+    for j in range(parts[0]):
+        for i in range(parts[1]):
+            i_begin, i_end = i * x, (i + 1) * x
+            j_begin, j_end = j * y, (j + 1) * y
+
+            black_image[j_begin:j_end, i_begin:i_end, :] = images[idx] * 255.0
+            idx += 1
+
+    return black_image[:parts[2], :parts[3], :]
+
 def show_image(image: cv2.imread):
+    """ 
+        This function will show a given cv2 image object and wait until user press a key
+    """
     # Display the output image
     cv2.imshow('Processed Image', image)
     cv2.waitKey(0)
