@@ -35,7 +35,7 @@ def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
     return extended_image
 
 def convert_to_grayscale(image):
-    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return np.expand_dims(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), axis=-1)
 
 def show_image(image: cv2.imread):
     # Display the output image
