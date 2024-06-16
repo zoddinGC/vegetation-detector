@@ -60,7 +60,7 @@ def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generat
                 # Check if the chunk size matches the expected size (debug)
                 print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
 
-                yield image_chunk
+                yield image_chunk, box
 
 def crop_and_save_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 256)):
     """
@@ -71,10 +71,10 @@ def crop_and_save_large_images(input_path: str, output_dir: str, chunk_size: tup
         :param output_dir: String Directory to save all small images .png
         :param chunck_size: Tuple(int, int) The size of the new small images
     """
-
+    # Check if the output directory exist
     check_folder_existence(output_dir)
 
-    for image_chunk in crop_and_save_large_images(input_path, output_dir, chunk_size):
+    for image_chunk, box in crop_and_save_large_images(input_path, output_dir, chunk_size):
         # Save the cunk
         save_chunck(image_chunk, output_dir)
 
