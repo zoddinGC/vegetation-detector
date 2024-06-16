@@ -18,6 +18,7 @@ from PIL import Image
 
 # Local imports
 from modules.managers.folder_manager import check_folder_existence
+from modules.managers.image_manager import crop_large_images
 
 
 def save_chunck(image_chunk:Image, output_dir: str):
@@ -43,7 +44,7 @@ def crop_and_save_large_images(input_path: str, output_dir: str, chunk_size: tup
     # Check if the output directory exist
     check_folder_existence(output_dir)
 
-    for image_chunk, *_ in crop_and_save_large_images(input_path, output_dir, chunk_size):
+    for image_chunk, *_ in crop_large_images(input_path, chunk_size):
         # Save the cunk
         save_chunck(image_chunk, output_dir)
 
