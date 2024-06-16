@@ -34,6 +34,9 @@ def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
 
     return extended_image
 
+def convert_to_grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
 def show_image(image: cv2.imread):
     # Display the output image
     cv2.imshow('Processed Image', image)
