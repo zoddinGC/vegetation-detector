@@ -29,10 +29,10 @@ def save_chunck(image_chunk:Image, output_dir: str):
     """
     
     number = len(listdir(output_dir))
-    image_chunk.save(f'{output_dir}/chunck_{number}.png', 'PNG')
+    image_chunk.save(f'{output_dir}/chunk_{number}.png', 'PNG')
 
 
-def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(250, 250)):
+def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 256)):
     """
         This function receives a path to a large image in .tif format, crop it, and transform
         it into small images .png
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     # Define command-line arguments
     parser.add_argument("--input", type=str, required=True, help="Path to the input orthomosaic file.")
     parser.add_argument("--output", type=str, required=True, help="Path to the output directory.")
+    parser.add_argument("--chunk_size", type=tuple, required=False, help="Size of the output cropped image. Example: (256,256)")
     
     # Parse arguments
     args = parser.parse_args()
