@@ -32,7 +32,7 @@ def save_chunck(image_chunk:Image, output_dir: str):
     image_chunk.save(f'{output_dir}/chunk_{number}.png', 'PNG')
 
 
-def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 256)):
+def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image]":
     """
         This function receives a path to a large image in .tif format, crop it, and transform
         it into small images .png
@@ -41,8 +41,6 @@ def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 
         :param output_dir: String Directory to save all small images .png
         :param chunck_size: Tuple(int, int) The size of the new small images
     """
-
-    check_folder_existence(output_dir)
 
     with Image.open(input_path) as img:
         # Max image dimensions
@@ -62,8 +60,23 @@ def crop_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 
                 # Check if the chunk size matches the expected size (debug)
                 print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
 
-                # Process the image chunk
-                save_chunck(image_chunk, output_dir)
+                yield image_chunk
+
+def crop_and_save_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 256)):
+    """
+        This function receives a path to a large image in .tif format, crop into small images, and save
+        them into the ouput directory.
+
+        :param input_path: String Path to original image .tif
+        :param output_dir: String Directory to save all small images .png
+        :param chunck_size: Tuple(int, int) The size of the new small images
+    """
+
+    check_folder_existence(output_dir)
+
+    for image_chunk in crop_and_save_large_images(input_path, output_dir, chunk_size):
+        # Save the cunk
+        save_chunck(image_chunk, output_dir)
 
 
 if __name__ == "__main__":
@@ -78,4 +91,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # Call the function with parsed arguments
-    crop_large_images(args.input, args.output)
+    crop_and_save_large_images(args.input, args.output)
