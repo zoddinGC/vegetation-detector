@@ -31,37 +31,6 @@ def save_chunck(image_chunk:Image, output_dir: str):
     number = len(listdir(output_dir))
     image_chunk.save(f'{output_dir}/chunk_{number}.png', 'PNG')
 
-
-def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image]":
-    """
-        This function receives a path to a large image in .tif format, crop it, and transform
-        it into small images .png
-
-        :param input_path: String Path to original image .tif
-        :param output_dir: String Directory to save all small images .png
-        :param chunck_size: Tuple(int, int) The size of the new small images
-    """
-
-    with Image.open(input_path) as img:
-        # Max image dimensions
-        width, height = img.size
-
-        for y in range(0, height, chunk_size[1]):
-            for x in range(0, width, chunk_size[0]):
-
-                # Get the minimum value (chunck or image dimensions)
-                right = min(x + chunk_size[0], width)
-                bottom = min(y + chunk_size[1], height)
-                box = (x, y, right, bottom)
-
-                # Crop the image to the box
-                image_chunk = img.crop(box)
-
-                # Check if the chunk size matches the expected size (debug)
-                print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
-
-                yield image_chunk, box
-
 def crop_and_save_large_images(input_path: str, output_dir: str, chunk_size: tuple=(256, 256)):
     """
         This function receives a path to a large image in .tif format, crop into small images, and save

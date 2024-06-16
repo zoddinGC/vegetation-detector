@@ -1,5 +1,37 @@
 import cv2
 import numpy as np
+from PIL import Image
+
+
+def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image]":
+    """
+        This function receives a path to a large image in .tif format, crop it, and transform
+        it into small images .png
+
+        :param input_path: String Path to original image .tif
+        :param output_dir: String Directory to save all small images .png
+        :param chunck_size: Tuple(int, int) The size of the new small images
+    """
+
+    with Image.open(input_path) as img:
+        # Max image dimensions
+        width, height = img.size
+
+        for y in range(0, height, chunk_size[1]):
+            for x in range(0, width, chunk_size[0]):
+
+                # Get the minimum value (chunck or image dimensions)
+                right = min(x + chunk_size[0], width)
+                bottom = min(y + chunk_size[1], height)
+                box = (x, y, right, bottom)
+
+                # Crop the image to the box
+                image_chunk = img.crop(box)
+
+                # Check if the chunk size matches the expected size (debug)
+                print(f"Cropped chunk box: {box}, actual size: {image_chunk.size}")
+
+                yield image_chunk, box
 
 def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
     height, width, _ = image.shape
@@ -36,6 +68,19 @@ def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
 
 def convert_to_grayscale(image):
     return np.expand_dims(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), axis=-1)
+
+def pil_to_cv2_image(pil_image):
+    # Convert the PIL image to a NumPy array
+    cv2_image = np.array(pil_image)
+
+    # Check the number of channels in the image
+    if cv2_image.shape[-1] == 4:
+        # Convert RGBA to RGB
+        cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_RGBA2RGB)
+    elif cv2_image.ndim == 2:  # Grayscale image
+        # Convert grayscale to RGB
+        cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_GRAY2RGB)
+    return cv2_image
 
 def show_image(image: cv2.imread):
     # Display the output image
