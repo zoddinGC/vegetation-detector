@@ -22,6 +22,7 @@ from os import listdir
 # Local imports
 from modules.managers.folder_manager import check_folder_existence
 from modules.managers.string_manager import extract_numbers
+from modules.managers.image_manager import show_image
 
 
 def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool = False) -> list:
@@ -69,9 +70,7 @@ def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool 
         image[mask == 255] = [0, 0, 0]
 
         # Display the output image
-        cv2.imshow('Processed Image', image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        show_image(image)
 
     write_clusters_yolo_notation(clusters, img_name=f'img_{key}', output_dir=output_dir)
 

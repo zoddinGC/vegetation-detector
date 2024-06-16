@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
@@ -32,3 +33,9 @@ def check_image_shape(image: np.ndarray, avg_shape: tuple) -> np.ndarray:
         extended_image = extended_image_with_width
 
     return extended_image
+
+def show_image(image: cv2.imread):
+    # Display the output image
+    cv2.imshow('Processed Image', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
