@@ -111,7 +111,7 @@ if __name__ == '__main__':
     # debug
     # train_model(original_images_dir='data/cropped', mask_images_dir='data/binary', model_path='data/models/best_model.h5')
 
-    parser = argparse.ArgumentParser(description="Divide orthomosaic into smaller sections.")
+    parser = argparse.ArgumentParser(description="Train a neural network model to predict binary images.")
     
     # Define command-line arguments
     parser.add_argument("--rgb", type=str, required=True, help="Path to the all cropped images to train the model </path/to/images/dir>")
