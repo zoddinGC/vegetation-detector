@@ -19,7 +19,7 @@ from keras.models import Model, load_model
 from os import listdir
 
 # Local imports
-from modules.managers.image_manager import show_image, check_image_shape, pil_to_cv2_image, crop_large_images
+from modules.managers.image_manager import show_image, check_image_shape, pil_to_cv2_image, crop_large_images, merge_cropped_images
 from modules.managers.folder_manager import check_folder_existence, clean_folder
 
 
@@ -51,7 +51,10 @@ def predict_images(larger_image_path: str, model_path: str, save_images_path: st
     model = load_model_from_path(model_path)
     chunk_size = model.input_shape[1:]
 
-    for image, box, original_size in crop_large_images(input_path=larger_image_path, chunk_size=chunk_size[:2]):
+    # Predicted images array
+    predicted_images = []
+
+    for image, divided_parts in crop_large_images(input_path=larger_image_path, chunk_size=chunk_size[:2]):
         # Convert PIL object in cv2 object
         image = pil_to_cv2_image(image)
 
@@ -66,15 +69,16 @@ def predict_images(larger_image_path: str, model_path: str, save_images_path: st
         # Return image and predicted image to 3 dimensions
         image = np.squeeze(image, axis=0)
         predict = np.squeeze(predict, axis=0)
-
-        # Save the predicted image
-        imwrite(f'{save_images_path}/img_{len(listdir(save_images_path))}.png', predict * 255.0)
+        predicted_images.append(predict)
 
         # Show the image if debug is True
         if debug:
             show_image(image)
             show_image(predict)
 
+    # Merge and save final image
+    final_image = merge_cropped_images(images=predicted_images, parts=divided_parts)
+    imwrite(f'{save_images_path}/predicted_image.png', final_image)
 
 if __name__ == "__main__":
     # predict_images(
