@@ -16,7 +16,6 @@ from cv2 import imwrite
 import argparse
 import numpy as np
 from keras.models import Model, load_model
-from os import listdir
 
 # Local imports
 from modules.managers.image_manager import show_image, check_image_shape, pil_to_cv2_image, crop_large_images, merge_cropped_images

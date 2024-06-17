@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 
-def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image, list]":
+def crop_large_images(input_path: str, chunk_size: tuple=(256, 256)) -> "Generator[Image, tuple]":
     """
         This function receives a path to a large image in .tif format, crop it, and transform
         it into small images .png
