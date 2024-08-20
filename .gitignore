@@ -3,6 +3,9 @@
 **.tif
 **img*.txt
 
+# Keep examples
+!data/example/*.png
+
 # Every predicted file
 data/predict/*
 
