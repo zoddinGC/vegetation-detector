@@ -28,13 +28,13 @@ from modules.managers.image_manager import check_image_shape, show_image, conver
 from modules.managers.folder_manager import check_folder_existence
 
 
-def __pre_process_mask(masks: list[cv2.imread]):
+def __pre_process_mask(masks: list[np.array]):
     """
         Function to convert all cv2 images within a list to a gray scale
     """
     return np.array([convert_to_grayscale(x) for x in masks])
 
-def check_all_images_shape(images: list[cv2.imread], avg_shape: list) -> np.array:
+def check_all_images_shape(images: list[np.array], avg_shape: list) -> np.array:
     """
         Function to check if all images inside of an array have the default shape of the model
     """
@@ -54,7 +54,7 @@ def load_images_from_directory(directory_path: str) -> tuple[cv2.imread]:
     images_list.sort(key=extract_numbers)
 
     # Load all images within the directory
-    return [cv2.imread(directory_path.strip('/') + '/' + x) for x in images_list]
+    return [cv2.imread(directory_path.rstrip('/') + '/' + x) for x in images_list]
 
 def train_model(original_images_dir: str, mask_images_dir: str, model_path: str, debug: bool = False):
     """

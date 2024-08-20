@@ -62,7 +62,7 @@ def detect_green_pixels(image_path: str, output_dir: str, key: int, debug: bool 
     clusters = cluster_plants(mask, image)
 
     # Save the output image inverted (white = Plant)
-    cv2.imwrite(output_dir.strip('/') + f'/img_{key}.png', cv2.bitwise_not(output_image))
+    cv2.imwrite(output_dir.rstrip('/') + f'/img_{key}.png', cv2.bitwise_not(output_image))
     print(f'Image img_{key}.png processed')
 
     if debug:

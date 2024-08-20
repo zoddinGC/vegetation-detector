@@ -27,7 +27,7 @@ def load_model_from_path(model_path: str) -> Model:
         Load a trained Keras Model from a given path
     """
     # Check misspeling characters from model path
-    model_path = model_path.strip('/')
+    model_path = model_path.rstrip('/')
     model_path = model_path if model_path.count('.h5') > 0 else model_path + '.h5'
 
     return load_model(model_path)
