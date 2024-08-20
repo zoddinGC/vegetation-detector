@@ -1,16 +1,3 @@
-"""
-Na segunda, você deverá gerar o dataset de segmentação de imagens, o qual irá alimentar
-o modelo de rede neural na etapa de treinamento e validação.
-Para isso, implemente um script Python que realize a binarização dos blocos das imagens,
-de forma que atribua-se o valor 1 a todos os pixels correspondentes a algum tipo de
-vegetação e 0 (zero) para os pixels que não sejam vegetação. Salve o resultado em
-imagem de escala cinza (PNG ou JPG) em um diretório separado.
-
-Ao final, espera-se que sejamos capazes de executar o script da seguinte forma:
-python binarize_images.py --input </path/to/images/dir> --output
-</path/to/segmented/dir/>
-"""
-
 # Python libraries
 import argparse
 import numpy as np

@@ -1,14 +1,3 @@
-"""
-A terceira parte do desafio consiste em implementar uma arquitetura de Rede Neural
-Artificial para segmentação de imagens (pode adotar arquiteturas conhecidas também) e
-treiná-la. Considere quebrar esta implementação em partes para melhor organização do
-código.
-Ao final, espera-se que sejamos capazes de executar o treinamento de um modelo de rede
-neural através do seguinte comando:
-python train_model.py --rgb </path/to/images/dir> --groundtruth
-</path/to/segmented/dir/> --modelpath </path/to/model.h5>
-"""
-
 # Python libraries
 import cv2
 import numpy as np

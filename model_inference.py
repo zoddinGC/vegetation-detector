@@ -1,16 +1,3 @@
-"""
-A última etapa corresponde à fase da inferência, onde o modelo treinado será usado para
-segmentar imagens RGB para identificação de regiões onde há vegetação ou não. Este
-último algoritmo será usado para testes em imagens que não foram fornecidas para o
-treinamento.
-Considere buscar imagens capturadas por drones na internet para você mesmo avaliar o
-nível de generalização de seu modelo treinado.
-Ao final desta etapa, espera-se que sejamos capazes de executar a inferência do modelo
-atraveś do seguinte comando:
-python model_inference.py --rgb </path/to/image.png> --modelpath
-</path/to/model.h5> --output </path/to/segmented/image.png>
-"""
-
 # Python libraries
 from cv2 import imwrite
 import argparse

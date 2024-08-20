@@ -1,15 +1,3 @@
-"""
-A primeira etapa consiste em quebrar uma imagem TIFF em partes menores. Na prática, os
-ortomosaicos podem ser muito grandes, o que inviabilizaria a execução de uma inferência
-de rede neural. Para isso, precisa-se quebrá-los em blocos (ou janelas) menores.
-Para isso, implemente um script Python que divida o arquivo de imagem original e blocos de
-imagens menores, salvando-os em arquivos PNG ou JPG. Ao final, espera-se que sejamos
-capazes de executar o script da seguinte forma:
-
-python divide_orthomosaic.py --input </path/to/orthomosaic.tif>
---output </path/to/output/dir/>
-"""
-
 # Python libraries
 import argparse
 
