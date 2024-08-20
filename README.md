@@ -4,9 +4,13 @@ This application is used to **crop larger images** into small ones (256x256 pixe
 
 **Example:**
 - Cropped image (from a larger one)
+
+
 ![Original Cropped Image](https://raw.githubusercontent.com/zoddinGC/vegetation-detector/main/data/example/original_cropped_image.png)
 
 - Binarized cropped image
+
+
 ![Binarized Cropped Image](https://raw.githubusercontent.com/zoddinGC/vegetation-detector/main/data/example/binarized_cropped_image.png)
 
 # How to use
